@@ -1,0 +1,152 @@
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.5;
+  margin: 0;
+  padding: 0;
+  background: #f4f4f4;
+}
+
+header {
+  background: #3f189b;
+  color: #fff;
+  text-align: center;
+  padding: 1rem 0;
+}
+
+div.addSection {
+  text-align: center;
+  margin: 10px 0;
+}
+
+div.postCard {
+  margin: 10px;
+  padding: 10px;
+  background-color: #3f189b1a;
+  box-shadow: 5px 5px 15px gray;
+  border-radius: 20px;
+}
+
+.hidden {
+  display: none;
+}
+
+div.postCard:hover {
+  border-top: 5px solid #3f189b;
+  border-bottom: 5px solid #3f189b;
+}
+
+h1.postTitle {
+  margin: 10px;
+}
+
+p.postBody {
+  margin: 10px;
+}
+
+input[type='text'] {
+  width: 300px;
+  padding: 10px;
+  margin: 10px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  vertical-align: top;
+}
+
+input[type='text']:focus {
+  height: 20px;
+  border-color: #4A90E2;
+  outline: none;
+  box-shadow: 1px 1px 5px #3f189b;
+}
+
+input[type='text']:hover {
+  border-color: #999;
+}
+
+textarea {
+  width: 70%;
+  max-width: 800px;
+  max-height: 300px;
+  height: 20px;
+  min-height: 20px;
+  padding: 10px;
+  margin: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  resize: vertical;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+textarea:focus {
+  outline: none;
+  border-color: #4A90E2;
+  box-shadow: 0 0 5px #3f189b;
+}
+
+textarea:hover {
+  border-color: #999;
+}
+
+input[type="button"] {
+  padding: 10px;
+  margin: 10px;
+  border-radius: 5px;
+  background-color: #3f189b;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+input[type="button"]:hover {
+  background-color: rgb(4, 76, 152);
+}
+
+/* ****************************************************************************************************** */
+.commentsSection {
+  margin-top: 20px;
+}
+
+.commentsSection h2 {
+  font-size: 1.2em;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.commentCard {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background-color: #f5f5fc;
+  padding: 10px;
+  margin-bottom: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.commentCard:hover {
+  transform: scale(1.02); /* Slight zoom on hover */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Emphasize shadow on hover */
+}
+.commentCard h3 {
+  margin: 0 0 5px 0;
+  color: #3f189b;
+}
+
+.commentEmail {
+  margin: 5px 0;
+  color: #5923d668;
+  font-style: italic;
+}
+
+.commentBody {
+  font-size: 1em;
+  margin: 5px 0;
+  color: #4a4949;
+}
+
+.showDetailsButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  background: #5e24e685;
+}
