@@ -1,9 +1,11 @@
 const postTitle = document.querySelector('input[placeholder="Enter Tilte"]');
 const postBody = document.querySelector('input[placeholder="Enter Body"]');
 const addButton = document.querySelector('input[value="Add Post"]');
+const spinner = document.querySelector('.lds-spinner');
 let allPosts = [];
 //***************************************  Get *******************************************************************************/
 const getPosts = function () {
+    spinner.style.display = 'block';
     fetch('https://jsonplaceholder.typicode.com/posts')
         .then(function (response) {
             return response.json();
@@ -15,6 +17,8 @@ const getPosts = function () {
         }).catch(function (error) {
             console.warn(error);
             alert("Failed to load posts. Please check your internet connection.");
+        }).finally(() => {
+            spinner.style.display = 'none';
         });
 }
 const displayPosts = function (posts) {
