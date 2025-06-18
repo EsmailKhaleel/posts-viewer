@@ -44,6 +44,32 @@
 
     <div class="posts-grid"></div>
 
+    <!-- Post Details Section (hidden by default) -->
+    <div class="postDetailsSection" id="postDetailsSection" style="display:none;">
+            <h1 class="postTitle" id="detailsTitle">Loading...</h1>
+            <p class="postBody" id="detailsBody"></p>
+            <div id="postMeta" style="margin-bottom:12px;"></div>
+            <div class="post-inputs">
+                <input type="text" id="editTitle" class="titleTextBox" placeholder="Edit Post Title">
+                <textarea id="editBody" class="bodyTextBox" placeholder="Edit Post Body"></textarea>
+            </div>
+            <div class="post-actions">
+                <input type="button" value="Update" class="btn btn-secondary" id="updateBtn">
+                <input type="button" value="Delete" class="btn btn-danger" id="deleteBtn">
+                <input type="button" value="Back" class="btn btn-secondary" id="backBtn">
+            </div>
+    </div>
+    <div class="commentsSection" id="commentsSection" style="display:none;">
+        <h2>Comments</h2>
+        <div class="commentsContainer" id="commentsContainer"></div>
+        <div class="comment-inputs">
+            <input type="text" id="commentTitle" class="commentTitleTextBox" placeholder="Enter Comment Title">
+            <input type="email" id="commentEmail" class="commentEmailTextBox" placeholder="Enter E-mail">
+            <textarea id="commentBody" class="commentBodyTextBox" placeholder="Enter Comment Body"></textarea>
+            <input type="button" value="Add Comment" class="btn btn-primary" id="addCommentBtn">
+        </div>
+    </div>
+
     <!-- Validation Dialog -->
     <dialog id="validationDialog" class="validation-dialog">
         <p id="dialogMessage"></p>
