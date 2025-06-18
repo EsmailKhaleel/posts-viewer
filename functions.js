@@ -1,5 +1,6 @@
 //post object{body,id,userId,title}
 const createPost = function (post) {
+    console.log("posting creation");
     let postCard = document.createElement('div');
     postCard.classList.add('postCard');
     // Append to posts-grid if it exists, else fallback to body
@@ -45,37 +46,6 @@ const createPost = function (post) {
     return postCard;
 };
 
-// ********************************************** create comment card ****************************************************************
-const createCommentCard = function (commentObject, commentsContainer) {
-    let commentCard = document.createElement('div');
-    commentCard.classList.add('commentCard');
-
-    let commentName = document.createElement('h3');
-    commentName.innerText = commentObject.name; // Comment name (title)
-    commentCard.append(commentName);
-
-    let commentEmail = document.createElement('p');
-    commentEmail.innerText = `Email: ${commentObject.email}`; // Comment email
-    commentEmail.classList.add('commentEmail');
-    commentCard.append(commentEmail);
-
-    let commentBody = document.createElement('p');
-    commentBody.innerText = commentObject.body; // Comment body
-    commentBody.classList.add('commentBody');
-    commentCard.append(commentBody);
-
-    commentsContainer.append(commentCard);
-}
-
-// ****************************************** fake adding comments functionality ****************************************************************
-const addComment = function (commentsSection, commentTitleTextBox, commentEmailTextBox, commentBodyTextBox) {
-    let fakeCommentObject = {
-        name: commentTitleTextBox.value.trim(),
-        email: commentEmailTextBox.value.trim(),
-        body: commentBodyTextBox.value.trim(),
-    };
-    createCommentCard(fakeCommentObject, commentsSection);
-}
 
 // Enhanced validation functions
 const validateEmail = (email) => {
@@ -156,87 +126,3 @@ const clearValidationErrors = () => {
         element.classList.remove('validation-error');
     });
 };
-
-// Enhanced validation for update post
-const validateUpdatePost = (titleTextBox, bodyTextBox) => {
-    clearValidationErrors();
-    let isValid = true;
-    
-    const titleError = validateRequired(titleTextBox.value, 'Title');
-    if (titleError) {
-        titleTextBox.classList.add('validation-error');
-        showMessage(titleError);
-        isValid = false;
-    } else {
-        const titleLengthError = validateLength(titleTextBox.value, 'Title', 3, 100);
-        if (titleLengthError) {
-            titleTextBox.classList.add('validation-error');
-            showMessage(titleLengthError);
-            isValid = false;
-        }
-    }
-    
-    const bodyError = validateRequired(bodyTextBox.value, 'Body');
-    if (bodyError) {
-        bodyTextBox.classList.add('validation-error');
-        showMessage(bodyError);
-        isValid = false;
-    } else {
-        const bodyLengthError = validateLength(bodyTextBox.value, 'Body', 10, 1000);
-        if (bodyLengthError) {
-            bodyTextBox.classList.add('validation-error');
-            showMessage(bodyLengthError);
-            isValid = false;
-        }
-    }
-    
-    return isValid;
-};
-
-// Enhanced comment validation
-const validateComment = (titleTextBox, emailTextBox, bodyTextBox) => {
-    clearValidationErrors();
-    let isValid = true;
-    
-    const titleError = validateRequired(titleTextBox.value, 'Comment title');
-    if (titleError) {
-        titleTextBox.classList.add('validation-error');
-        showMessage(titleError);
-        isValid = false;
-    } else {
-        const titleLengthError = validateLength(titleTextBox.value, 'Comment title', 2, 50);
-        if (titleLengthError) {
-            titleTextBox.classList.add('validation-error');
-            showMessage(titleLengthError);
-            isValid = false;
-        }
-    }
-    
-    const emailError = validateRequired(emailTextBox.value, 'Email');
-    if (emailError) {
-        emailTextBox.classList.add('validation-error');
-        showMessage(emailError);
-        isValid = false;
-    } else if (!validateEmail(emailTextBox.value)) {
-        emailTextBox.classList.add('validation-error');
-        showMessage('Please enter a valid email address');
-        isValid = false;
-    }
-    
-    const bodyError = validateRequired(bodyTextBox.value, 'Comment body');
-    if (bodyError) {
-        bodyTextBox.classList.add('validation-error');
-        showMessage(bodyError);
-        isValid = false;
-    } else {
-        const bodyLengthError = validateLength(bodyTextBox.value, 'Comment body', 5, 500);
-        if (bodyLengthError) {
-            bodyTextBox.classList.add('validation-error');
-            showMessage(bodyLengthError);
-            isValid = false;
-        }
-    }
-    
-    return isValid;
-};
-

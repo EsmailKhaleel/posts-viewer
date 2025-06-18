@@ -39,7 +39,6 @@ const validateAddPost = () => {
     return isValid;
 };
 
-//***************************************  Get *******************************************************************************/
 const getPosts = function () {
     fetch('https://jsonplaceholder.typicode.com/posts')
         .then(function (response) {
@@ -74,7 +73,6 @@ const storedPosts = function (allPosts) {
     searching(allPosts);
 }
 
-//***************************************  Insert *******************************************************************************/
 addButton.addEventListener('click', function () {
     // Enhanced validation
     if (!validateAddPost()) {
@@ -123,55 +121,6 @@ addButton.addEventListener('click', function () {
         });
 });
 
-//***************************************  Update *******************************************************************************/
-const updatePost = function (post, updatedTitle, updatedBody, titleTextBox, bodyTextBox) {
-    // Show loading state
-    const updateButton = titleTextBox.parentElement.parentElement.querySelector('.btn-secondary');
-    const originalValue = updateButton.value;
-    updateButton.value = 'Updating...';
-    updateButton.disabled = true;
-    
-    fetch(`https://jsonplaceholder.typicode.com/posts/${post.id}`, {
-        method: 'PATCH',
-        body: JSON.stringify({
-            title: titleTextBox.value.trim(),
-            body: bodyTextBox.value.trim(),
-        }),
-        headers: {
-            'Content-type': 'application/json',
-        },
-    })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then((data) => {
-            console.log(data);
-            updatedTitle.innerText = data.title;
-            updatedBody.innerText = data.body;
-            titleTextBox.value = '';
-            bodyTextBox.value = '';
-            showMessage("Post updated successfully!", 'success');
-            
-            // Update the post in allPosts array for search functionality
-            const postIndex = allPosts.findIndex(p => p.id === post.id);
-            if (postIndex !== -1) {
-                allPosts[postIndex] = { ...allPosts[postIndex], ...data };
-            }
-        }).catch((error) => {
-            console.log('not updated', error);
-            showMessage("Failed to update post. Please try again.");
-        })
-        .finally(() => {
-            // Reset button state
-            updateButton.value = originalValue;
-            updateButton.disabled = false;
-        });
-}
-
-//***************************************  Delete Post *******************************************************************************/
 const deletePost = function (post, postCard) {
     // Show loading state
     const deleteButton = postCard.querySelector('.btn-danger');
@@ -201,46 +150,4 @@ const deletePost = function (post, postCard) {
         deleteButton.value = originalValue;
         deleteButton.disabled = false;
     });
-}
-
-// ****************************************** Fetch comments for the post****************************************************************
-const getComments = function (post, commentsContainer) {
-    // Show loading state for comments
-    const loadingDiv = document.createElement('div');
-    loadingDiv.textContent = 'Loading comments...';
-    loadingDiv.style.textAlign = 'center';
-    loadingDiv.style.color = 'var(--accent-color)';
-    loadingDiv.style.padding = '20px';
-    commentsContainer.append(loadingDiv);
-    
-    fetch(`https://jsonplaceholder.typicode.com/posts/${post.id}/comments`)
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then((comments) => {
-            console.log(comments);
-            loadingDiv.remove(); // Remove loading message
-            
-            if (comments.length === 0) {
-                const noCommentsDiv = document.createElement('div');
-                noCommentsDiv.textContent = 'No comments yet. Be the first to comment!';
-                noCommentsDiv.style.textAlign = 'center';
-                noCommentsDiv.style.color = 'var(--text-light)';
-                noCommentsDiv.style.padding = '20px';
-                noCommentsDiv.style.fontStyle = 'italic';
-                commentsContainer.append(noCommentsDiv);
-            } else {
-                comments.forEach((comment) => {
-                    createCommentCard(comment, commentsContainer);
-                });
-            }
-        })
-        .catch((error) => {
-            console.warn('Error fetching comments:', error);
-            loadingDiv.remove();
-            showMessage("Failed to load comments. Please try again.");
-        });
 }
