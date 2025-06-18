@@ -4,10 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lab10</title>
-    <script defer src="search.js"></script>
-    <script defer src="ApiCrud.js"></script>
+    <meta name="PWA-with-vanilla-JS" content="PWA">
+    <meta name="PushNotification" content="PushNotification">
+    <meta name="PWA-with-vanilla-JS" content="simple pwa app with Push Notification feature">
+    <meta name="theme-color" content="#F2E8C6">
+    <link rel="icon" type="image/png" sizes="512x512" href="public/icon512_rounded.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="public/icon512_maskable.png" purpose="maskable">
+    <link rel="manifest" href="public/manifest.json">
+    <meta http-equiv="Content-Language" content="en-US">
+    <meta name="direction" content="auto">
+    <title>Enhanced Posts Viewer</title>
     <script defer src="functions.js"></script>
+    <script defer src="ApiCrud.js"></script>
+    <script defer src="search.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -15,13 +24,32 @@
     <header>
         <h1>Posts Viewer</h1>
     </header>
+    
     <div class="addSection">
-        <input type="text" placeholder="Enter Tilte"><br>
-        <input type="text" placeholder="Enter Body"><br>
-        <input type="button" value="Add Post"><br>
-        <input type="text" id="searchBar" placeholder="Search">
+        <h2>Add New Post</h2>
+        <div class="input-group">
+            <label for="postTitle">Post Title:</label>
+            <input type="text" id="postTitle" placeholder="Enter Post Title">
+        </div>
+        <div class="input-group">
+            <label for="postBody">Post Body:</label>
+            <textarea id="postBody" placeholder="Enter Post Body"></textarea>
+        </div>
+        <input type="button" value="Add Post" class="btn btn-primary">
     </div>
-    <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+
+    <div class="search-container">
+        <input type="text" id="searchBar" placeholder="Search posts by title or body...">
+    </div>
+
+    <div class="posts-grid"></div>
+
+    <!-- Validation Dialog -->
+    <dialog id="validationDialog" class="validation-dialog">
+        <p id="dialogMessage"></p>
+        <button id="dialogCloseBtn" autofocus>Close</button>
+    </dialog>
+
 </body>
 
 </html>

@@ -1,118 +1,50 @@
-
 //post object{body,id,userId,title}
 const createPost = function (post) {
     let postCard = document.createElement('div');
     postCard.classList.add('postCard');
-    document.body.append(postCard);
-    //****************************************** title and body ***************************************************/
+    // Append to posts-grid if it exists, else fallback to body
+    const grid = document.querySelector('.posts-grid');
+    if (grid) {
+        grid.append(postCard);
+    } else {
+        document.body.append(postCard);
+    }
+    
+    // Title and body
     let title = document.createElement('h1');
     title.classList.add('postTitle');
     title.innerText = post.title;
     postCard.append(title);
+    
     let postBody = document.createElement('p');
     postBody.classList.add('postBody');
     postBody.innerText = post.body;
     postCard.append(postBody);
     
-    //****************************************** inputs **********************************************************/
-    let titleTextBox = document.createElement('input');
-    titleTextBox.setAttribute('type', 'text');
-    titleTextBox.setAttribute('placeholder', 'Enter Post Title');
-    titleTextBox.classList.add('titleTextBox');
-    postCard.append(titleTextBox);
-    let bodyTextBox = document.createElement('textarea');
-    bodyTextBox.setAttribute('placeholder', 'Enter Post Body');
-    bodyTextBox.classList.add('bodyTextBox');
-    postCard.append(bodyTextBox);
-    let br = document.createElement('br');
-    postCard.append(br);
-    //****************************************** buttons **********************************************************/
-    let updateButton = document.createElement('input');
-    updateButton.setAttribute('type', 'button');
-    updateButton.setAttribute('value', 'Update');
-    updateButton.classList.add('#updateButton');
-    updateButton.onclick = () => { updatePost(post, title, postBody, titleTextBox, bodyTextBox); }
-    postCard.append(updateButton);
-    let showDetailsButton = document.createElement('input');
-    showDetailsButton.setAttribute('type', 'button');
-    showDetailsButton.setAttribute('value', 'Show Comments');
-    showDetailsButton.classList.add('showDetailsButton');
-    showDetailsButton.addEventListener('click',function updateHandler() { 
-        showDetails(post, postCard ,showDetailsButton ,updateHandler); 
-        this.removeEventListener('click',updateHandler);
-        this.disabled=true;
+    // Buttons section
+    let postActions = document.createElement('div');
+    postActions.classList.add('post-actions');
+    postCard.append(postActions);
+    
+    let viewPostButton = document.createElement('input');
+    viewPostButton.setAttribute('type', 'button');
+    viewPostButton.setAttribute('value', 'View Post');
+    viewPostButton.classList.add('btn', 'btn-primary');
+    viewPostButton.addEventListener('click', function() {
+        window.location.href = `post.html?id=${post.id}`;
     });
-    postCard.append(showDetailsButton);
+    postActions.append(viewPostButton);
+    
     let deleteButton = document.createElement('input');
     deleteButton.setAttribute('type', 'button');
     deleteButton.setAttribute('value', 'Delete');
-    deleteButton.classList.add('deleteButton');
+    deleteButton.classList.add('btn', 'btn-danger');
     deleteButton.onclick = () => { deletePost(post, postCard); }
-    postCard.append(deleteButton);
-    return postCard;
-}
-// ********************************************** create comment section ****************************************************************
-const showDetails = function (post, postCard ,showDetailsButton ,updateHandler) {
-    let commentsSection = document.createElement('div'); // create Comments Section
-    postCard.append(commentsSection);
-
-    let commentsHeader = document.createElement('h2');
-    commentsHeader.innerText = 'Comments';
-    commentsSection.append(commentsHeader);
-
-    let commentsContainer = document.createElement('div');// create container hold comments cards
-    commentsContainer.classList.add('commentsContainer'); 
-    commentsSection.append(commentsContainer);
-    //fetch comments
-    getComments(post, commentsContainer); 
-    // ****************************************** Add comments Section ****************************************************************
-    let commentTitleTextBox = document.createElement('input');
-    commentTitleTextBox.setAttribute('type', 'text');
-    commentTitleTextBox.setAttribute('placeholder', 'Enter Comment Title');
-    commentTitleTextBox.classList.add('commentTitleTextBox');
-    commentsSection.append(commentTitleTextBox);
-
-    let commentEmailTextBox = document.createElement('input');
-    commentEmailTextBox.setAttribute('type', 'text');
-    commentEmailTextBox.setAttribute('placeholder', 'Enter E-mail');
-    commentEmailTextBox.classList.add('commentEmailTextBox');
-    commentsSection.append(commentEmailTextBox);
-
-    let commentBodyTextBox = document.createElement('textarea');
-    commentBodyTextBox.setAttribute('placeholder', 'Enter Comment Body');
-    commentBodyTextBox.classList.add('commentBodyTextBox');
-    commentsSection.append(commentBodyTextBox);
-
-    let br = document.createElement('br');
-    commentsSection.append(br);
-
-    let addCommentButton = document.createElement('input');
-    addCommentButton.setAttribute('type', 'button');
-    addCommentButton.setAttribute('value', 'Add Comment');
-    addCommentButton.classList.add('addCommentButton');
-    addCommentButton.onclick = () => {
-        addComment(commentsContainer, commentTitleTextBox, commentEmailTextBox, commentBodyTextBox);
-        alert("Comment added successfully!");
-        commentTitleTextBox.value = '';
-        commentEmailTextBox.value = '';
-        commentBodyTextBox.value = '';
-    }
-    commentsSection.append(addCommentButton);
-
-
-    let backButton = document.createElement('input'); // create Back Button
-    backButton.setAttribute('type', 'button');
-    backButton.setAttribute('value', 'Back');
-    backButton.classList.add('backButton');
-    backButton.onclick = () => {
-        commentsSection.remove(); // Remove the details card
-        backButton.remove(); //Removes the back button
-        showDetailsButton.addEventListener('click',updateHandler);
-        showDetailsButton.disabled=false;
-    };
-    commentsSection.append(backButton);
+    postActions.append(deleteButton);
     
+    return postCard;
 };
+
 // ********************************************** create comment card ****************************************************************
 const createCommentCard = function (commentObject, commentsContainer) {
     let commentCard = document.createElement('div');
@@ -123,7 +55,7 @@ const createCommentCard = function (commentObject, commentsContainer) {
     commentCard.append(commentName);
 
     let commentEmail = document.createElement('p');
-    commentEmail.innerText = `email: ${commentObject.email}`; // Comment email
+    commentEmail.innerText = `Email: ${commentObject.email}`; // Comment email
     commentEmail.classList.add('commentEmail');
     commentCard.append(commentEmail);
 
@@ -135,14 +67,176 @@ const createCommentCard = function (commentObject, commentsContainer) {
     commentsContainer.append(commentCard);
 }
 
-
 // ****************************************** fake adding comments functionality ****************************************************************
 const addComment = function (commentsSection, commentTitleTextBox, commentEmailTextBox, commentBodyTextBox) {
     let fakeCommentObject = {
-        name: commentTitleTextBox.value,
-        email: commentEmailTextBox.value,
-        body: commentBodyTextBox.value,
+        name: commentTitleTextBox.value.trim(),
+        email: commentEmailTextBox.value.trim(),
+        body: commentBodyTextBox.value.trim(),
     };
     createCommentCard(fakeCommentObject, commentsSection);
 }
+
+// Enhanced validation functions
+const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+};
+
+const validateRequired = (value, fieldName) => {
+    if (!value || value.trim().length === 0) {
+        return `${fieldName} is required`;
+    }
+    return null;
+};
+
+const validateLength = (value, fieldName, minLength, maxLength) => {
+    if (value.length < minLength) {
+        return `${fieldName} must be at least ${minLength} characters long`;
+    }
+    if (maxLength && value.length > maxLength) {
+        return `${fieldName} must be no more than ${maxLength} characters long`;
+    }
+    return null;
+};
+
+// Dialog elements
+const dialog = document.getElementById('validationDialog');
+const dialogMessage = document.getElementById('dialogMessage');
+const dialogCloseBtn = document.getElementById('dialogCloseBtn');
+
+// Initialize dialog event listeners
+document.addEventListener('DOMContentLoaded', () => {
+    // Close button event listener
+    dialogCloseBtn.addEventListener('click', () => {
+        dialog.close();
+    });
+
+    // Close dialog when clicking outside
+    dialog.addEventListener('click', (e) => {
+        if (e.target === dialog) {
+            dialog.close();
+        }
+    });
+
+    // Close dialog with Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && dialog.open) {
+            dialog.close();
+        }
+    });
+});
+
+const showMessage = (message, type = 'error') => {
+    // Set message content
+    dialogMessage.textContent = message;
+    
+    // Set dialog styling based on message type
+    if (type === 'error') {
+        dialogMessage.style.color = 'var(--danger-color)';
+    } else {
+        dialogMessage.style.color = '#4CAF50';
+    }
+    
+    // Show the dialog
+    dialog.showModal();
+    
+    // Auto-close after 5 seconds for success messages
+    if (type === 'success') {
+        setTimeout(() => {
+            if (dialog.open) {
+                dialog.close();
+            }
+        }, 5000);
+    }
+};
+
+const clearValidationErrors = () => {
+    document.querySelectorAll('.validation-error').forEach(element => {
+        element.classList.remove('validation-error');
+    });
+};
+
+// Enhanced validation for update post
+const validateUpdatePost = (titleTextBox, bodyTextBox) => {
+    clearValidationErrors();
+    let isValid = true;
+    
+    const titleError = validateRequired(titleTextBox.value, 'Title');
+    if (titleError) {
+        titleTextBox.classList.add('validation-error');
+        showMessage(titleError);
+        isValid = false;
+    } else {
+        const titleLengthError = validateLength(titleTextBox.value, 'Title', 3, 100);
+        if (titleLengthError) {
+            titleTextBox.classList.add('validation-error');
+            showMessage(titleLengthError);
+            isValid = false;
+        }
+    }
+    
+    const bodyError = validateRequired(bodyTextBox.value, 'Body');
+    if (bodyError) {
+        bodyTextBox.classList.add('validation-error');
+        showMessage(bodyError);
+        isValid = false;
+    } else {
+        const bodyLengthError = validateLength(bodyTextBox.value, 'Body', 10, 1000);
+        if (bodyLengthError) {
+            bodyTextBox.classList.add('validation-error');
+            showMessage(bodyLengthError);
+            isValid = false;
+        }
+    }
+    
+    return isValid;
+};
+
+// Enhanced comment validation
+const validateComment = (titleTextBox, emailTextBox, bodyTextBox) => {
+    clearValidationErrors();
+    let isValid = true;
+    
+    const titleError = validateRequired(titleTextBox.value, 'Comment title');
+    if (titleError) {
+        titleTextBox.classList.add('validation-error');
+        showMessage(titleError);
+        isValid = false;
+    } else {
+        const titleLengthError = validateLength(titleTextBox.value, 'Comment title', 2, 50);
+        if (titleLengthError) {
+            titleTextBox.classList.add('validation-error');
+            showMessage(titleLengthError);
+            isValid = false;
+        }
+    }
+    
+    const emailError = validateRequired(emailTextBox.value, 'Email');
+    if (emailError) {
+        emailTextBox.classList.add('validation-error');
+        showMessage(emailError);
+        isValid = false;
+    } else if (!validateEmail(emailTextBox.value)) {
+        emailTextBox.classList.add('validation-error');
+        showMessage('Please enter a valid email address');
+        isValid = false;
+    }
+    
+    const bodyError = validateRequired(bodyTextBox.value, 'Comment body');
+    if (bodyError) {
+        bodyTextBox.classList.add('validation-error');
+        showMessage(bodyError);
+        isValid = false;
+    } else {
+        const bodyLengthError = validateLength(bodyTextBox.value, 'Comment body', 5, 500);
+        if (bodyLengthError) {
+            bodyTextBox.classList.add('validation-error');
+            showMessage(bodyLengthError);
+            isValid = false;
+        }
+    }
+    
+    return isValid;
+};
 

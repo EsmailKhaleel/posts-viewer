@@ -1,114 +1,246 @@
-const postTitle = document.querySelector('input[placeholder="Enter Tilte"]');
-const postBody = document.querySelector('input[placeholder="Enter Body"]');
+const postTitle = document.querySelector('#postTitle');
+const postBody = document.querySelector('#postBody');
 const addButton = document.querySelector('input[value="Add Post"]');
-const spinner = document.querySelector('.lds-spinner');
 let allPosts = [];
+
+// Enhanced validation for adding posts
+const validateAddPost = () => {
+    clearValidationErrors();
+    let isValid = true;
+    
+    const titleError = validateRequired(postTitle.value, 'Post title');
+    if (titleError) {
+        postTitle.classList.add('validation-error');
+        showMessage(titleError);
+        isValid = false;
+    } else {
+        const titleLengthError = validateLength(postTitle.value, 'Post title', 3, 100);
+        if (titleLengthError) {
+            postTitle.classList.add('validation-error');
+            showMessage(titleLengthError);
+            isValid = false;
+        }
+    }
+    
+    const bodyError = validateRequired(postBody.value, 'Post body');
+    if (bodyError) {
+        postBody.classList.add('validation-error');
+        showMessage(bodyError);
+        isValid = false;
+    } else {
+        const bodyLengthError = validateLength(postBody.value, 'Post body', 10, 1000);
+        if (bodyLengthError) {
+            postBody.classList.add('validation-error');
+            showMessage(bodyLengthError);
+            isValid = false;
+        }
+    }
+    
+    return isValid;
+};
+
 //***************************************  Get *******************************************************************************/
 const getPosts = function () {
-    spinner.style.display = 'block';
     fetch('https://jsonplaceholder.typicode.com/posts')
         .then(function (response) {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
             return response.json();
         })
-        .then(function (data) { //data is an array of posts objects
+        .then(function (data) {
             allPosts = data;
             displayPosts(data);
             storedPosts(allPosts);
         }).catch(function (error) {
             console.warn(error);
-            alert("Failed to load posts. Please check your internet connection.");
-        }).finally(() => {
-            spinner.style.display = 'none';
+            showMessage("Failed to load posts. Please check your internet connection.");
         });
 }
+
 const displayPosts = function (posts) {
     document.querySelectorAll('.postCard').forEach(postCard => postCard.remove());
-    posts.forEach(post => createPost(post));
+    if (posts.length === 0) {
+        showMessage("No posts found matching your search criteria.", 'error');
+    } else {
+        posts.forEach(post => createPost(post));
+    }
 }
+
 getPosts();
+
 const storedPosts = function (allPosts) {
     console.log(allPosts);
     searching(allPosts);
 }
+
 //***************************************  Insert *******************************************************************************/
 addButton.addEventListener('click', function () {
-    // Validation
-    if (!postTitle.value.trim() || !postBody.value.trim()) {
-        alert("Title and body cannot be empty!");
+    // Enhanced validation
+    if (!validateAddPost()) {
         return;
     }
+    
+    // Disable button during submission
+    addButton.disabled = true;
+    addButton.value = 'Adding...';
+    
     fetch('https://jsonplaceholder.typicode.com/posts', {
         method: 'POST',
         body: JSON.stringify({
-            title: postTitle.value,
-            body: postBody.value,
+            title: postTitle.value.trim(),
+            body: postBody.value.trim(),
+            userId: 1, // Adding userId for completeness
         }),
         headers: {
             'Content-type': 'application/json',
         },
     })
-        .then((response) => response.json())
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then((data) => {
             console.log(data);
             createPost(data);
-            alert("Post added successfully!");
+            showMessage("Post added successfully!", 'success');
+            // Clear form
+            postTitle.value = '';
+            postBody.value = '';
+            // Add to allPosts array for search functionality
+            allPosts.unshift(data);
         })
         .catch(function (error) {
             console.warn(error);
-            alert("Failed to add post. Please try again.");
+            showMessage("Failed to add post. Please try again.");
+        })
+        .finally(() => {
+            // Re-enable button
+            addButton.disabled = false;
+            addButton.value = 'Add Post';
         });
 });
+
 //***************************************  Update *******************************************************************************/
 const updatePost = function (post, updatedTitle, updatedBody, titleTextBox, bodyTextBox) {
+    // Show loading state
+    const updateButton = titleTextBox.parentElement.parentElement.querySelector('.btn-secondary');
+    const originalValue = updateButton.value;
+    updateButton.value = 'Updating...';
+    updateButton.disabled = true;
+    
     fetch(`https://jsonplaceholder.typicode.com/posts/${post.id}`, {
         method: 'PATCH',
         body: JSON.stringify({
-            title: titleTextBox.value,
-            body: bodyTextBox.value,
+            title: titleTextBox.value.trim(),
+            body: bodyTextBox.value.trim(),
         }),
         headers: {
             'Content-type': 'application/json',
         },
     })
-        .then((response) => response.json())
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then((data) => {
             console.log(data);
             updatedTitle.innerText = data.title;
             updatedBody.innerText = data.body;
             titleTextBox.value = '';
             bodyTextBox.value = '';
-            alert("Post updated successfully!");
+            showMessage("Post updated successfully!", 'success');
+            
+            // Update the post in allPosts array for search functionality
+            const postIndex = allPosts.findIndex(p => p.id === post.id);
+            if (postIndex !== -1) {
+                allPosts[postIndex] = { ...allPosts[postIndex], ...data };
+            }
         }).catch((error) => {
-            console.log('not updated');
-            alert("Failed to update post.");
+            console.log('not updated', error);
+            showMessage("Failed to update post. Please try again.");
+        })
+        .finally(() => {
+            // Reset button state
+            updateButton.value = originalValue;
+            updateButton.disabled = false;
         });
 }
+
 //***************************************  Delete Post *******************************************************************************/
-const deletePost = function (id, postCard) {
-    fetch(`https://jsonplaceholder.typicode.com/posts/${id}`, {
+const deletePost = function (post, postCard) {
+    // Show loading state
+    const deleteButton = postCard.querySelector('.btn-danger');
+    const originalValue = deleteButton.value;
+    deleteButton.value = 'Deleting...';
+    deleteButton.disabled = true;
+    
+    fetch(`https://jsonplaceholder.typicode.com/posts/${post.id}`, {
         method: 'DELETE',
-    }).then(() => {
-        console.log(`postObject ${id} is deleted`);
+    }).then((response) => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        console.log(`postObject ${post.id} is deleted`);
         postCard.remove();
-        alert("Post deleted successfully!");
+        showMessage("Post deleted successfully!", 'success');
+        
+        // Remove from allPosts array for search functionality
+        const postIndex = allPosts.findIndex(p => p.id === post.id);
+        if (postIndex !== -1) {
+            allPosts.splice(postIndex, 1);
+        }
     }).catch((error) => {
         console.log(error);
-        alert("Failed to delete post.");
+        showMessage("Failed to delete post. Please try again.");
+        // Reset button state on error
+        deleteButton.value = originalValue;
+        deleteButton.disabled = false;
     });
 }
 
 // ****************************************** Fetch comments for the post****************************************************************
 const getComments = function (post, commentsContainer) {
+    // Show loading state for comments
+    const loadingDiv = document.createElement('div');
+    loadingDiv.textContent = 'Loading comments...';
+    loadingDiv.style.textAlign = 'center';
+    loadingDiv.style.color = 'var(--accent-color)';
+    loadingDiv.style.padding = '20px';
+    commentsContainer.append(loadingDiv);
+    
     fetch(`https://jsonplaceholder.typicode.com/posts/${post.id}/comments`)
-        .then((response) => response.json())
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then((comments) => {
             console.log(comments);
-            comments.forEach((comment) => {
-                createCommentCard(comment, commentsContainer);
-            });
+            loadingDiv.remove(); // Remove loading message
+            
+            if (comments.length === 0) {
+                const noCommentsDiv = document.createElement('div');
+                noCommentsDiv.textContent = 'No comments yet. Be the first to comment!';
+                noCommentsDiv.style.textAlign = 'center';
+                noCommentsDiv.style.color = 'var(--text-light)';
+                noCommentsDiv.style.padding = '20px';
+                noCommentsDiv.style.fontStyle = 'italic';
+                commentsContainer.append(noCommentsDiv);
+            } else {
+                comments.forEach((comment) => {
+                    createCommentCard(comment, commentsContainer);
+                });
+            }
         })
         .catch((error) => {
             console.warn('Error fetching comments:', error);
-            alert("Failed to load comments. Please try again.");
+            loadingDiv.remove();
+            showMessage("Failed to load comments. Please try again.");
         });
 }
