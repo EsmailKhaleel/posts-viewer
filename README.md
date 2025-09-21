@@ -1,5 +1,7 @@
 # Posts Viewer
 
+<img src="logo.png" alt="Project Icon" width="120" height="120">
+
 A modern, responsive web application for viewing, creating, updating, and managing posts with comments. Built with vanilla JavaScript and enhanced with comprehensive validation and a beautiful UI.
 
 ## 🎨 Design Features
