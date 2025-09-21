@@ -11,6 +11,7 @@
     <meta http-equiv="Content-Language" content="en-US">
     <meta name="direction" content="auto">
     <title>Enhanced Posts Viewer</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="./logo.png?v=2">
     <script defer src="functions.js"></script>
     <script defer src="ApiCrud.js"></script>
     <script defer src="search.js"></script>
@@ -19,9 +20,12 @@
 
 <body>
     <header>
+        <div class="logo-container">
+            <img src="logo.png" alt="Logo" class="logo">
+        </div>
         <h1>Posts Viewer</h1>
     </header>
-    
+
     <div class="addSection">
         <h2>Add New Post</h2>
         <div class="input-group">
@@ -40,21 +44,23 @@
     </div>
 
     <div class="posts-grid"></div>
+    <button type="button" class="btn btn-primary" id="loadMoreBtn" style="display:none;margin:12px auto;">Load
+        More</button>
 
     <!-- Post Details Section (hidden by default) -->
     <div class="postDetailsSection" id="postDetailsSection" style="display:none;">
-            <h1 class="postTitle" id="detailsTitle">Loading...</h1>
-            <p class="postBody" id="detailsBody"></p>
-            <div id="postMeta" style="margin-bottom:12px;"></div>
-            <div class="post-inputs">
-                <input type="text" id="editTitle" class="titleTextBox" placeholder="Edit Post Title">
-                <textarea id="editBody" class="bodyTextBox" placeholder="Edit Post Body"></textarea>
-            </div>
-            <div class="post-actions">
-                <input type="button" value="Update" class="btn btn-secondary" id="updateBtn">
-                <input type="button" value="Delete" class="btn btn-danger" id="deleteBtn">
-                <input type="button" value="Back" class="btn btn-secondary" id="backBtn">
-            </div>
+        <h1 class="postTitle" id="detailsTitle">Loading...</h1>
+        <p class="postBody" id="detailsBody"></p>
+        <div id="postMeta" style="margin-bottom:12px;"></div>
+        <div class="post-inputs">
+            <input type="text" id="editTitle" class="titleTextBox" placeholder="Edit Post Title">
+            <textarea id="editBody" class="bodyTextBox" placeholder="Edit Post Body"></textarea>
+        </div>
+        <div class="post-actions">
+            <input type="button" value="Update" class="btn btn-secondary" id="updateBtn">
+            <input type="button" value="Delete" class="btn btn-danger" id="deleteBtn">
+            <input type="button" value="Back" class="btn btn-secondary" id="backBtn">
+        </div>
     </div>
     <div class="commentsSection" id="commentsSection" style="display:none;">
         <h2>Comments</h2>

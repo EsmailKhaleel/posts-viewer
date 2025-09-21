@@ -1,6 +1,7 @@
 const postTitle = document.querySelector('#postTitle');
 const postBody = document.querySelector('#postBody');
 const addButton = document.querySelector('input[value="Add Post"]');
+const loadMoreBtn = document.querySelector('#loadMoreBtn');
 let allPosts = [];
 
 // Enhanced validation for adding posts
@@ -49,7 +50,8 @@ const getPosts = function () {
         })
         .then(function (data) {
             allPosts = data;
-            displayPosts(data);
+            displayPosts(allPosts.slice(0, 10));
+            loadMoreBtn.style.display = 'block';
             storedPosts(allPosts);
         }).catch(function (error) {
             console.warn(error);
@@ -151,3 +153,12 @@ const deletePost = function (post, postCard) {
         deleteButton.disabled = false;
     });
 }
+
+loadMoreBtn.addEventListener('click', function() {
+    const currentlyDisplayed = document.querySelectorAll('.postCard').length;
+    const nextPosts = allPosts.slice(0, currentlyDisplayed + 10);
+    displayPosts(nextPosts);
+    if (nextPosts.length === allPosts.length) {
+        loadMoreBtn.style.display = 'none';
+    }
+});

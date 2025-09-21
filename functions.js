@@ -137,6 +137,7 @@ function showPostDetails(postId) {
     document.querySelector('.posts-grid').style.display = 'none';
     document.querySelector('.addSection').style.display = 'none';
     document.querySelector('.search-container').style.display = 'none';
+    document.getElementById('loadMoreBtn').style.display = 'none';
     // Show details UI
     const postDetailsSection = document.getElementById('postDetailsSection');
     const commentsSection = document.getElementById('commentsSection');

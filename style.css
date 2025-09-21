@@ -1,4 +1,3 @@
-/* Updated Color Palette: #7a2940 as primary, whitish background */
 :root {
   --primary: #7a2940;
   --primary-light: #a04a67;
@@ -28,12 +27,34 @@ body {
 }
 
 header {
-  background: var(--primary);
+  background: #1D3249;
   color: var(--text-light);
   text-align: center;
   padding: 1.2rem 0;
   border-bottom: 2px solid var(--accent-color);
   box-shadow: var(--card-shadow);
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 8px;
+  border-radius: 50%;
+  overflow: hidden;
+  height: 100px;
+  width: 100px;
+}
+
+.logo{
+  height: 100%;
+  width: 100%;
+  transform: scale(1.3);
 }
 
 header h1 {
@@ -75,10 +96,11 @@ input[type='text'],
 input[type='email'] {
   width: 100%;
   padding: 8px;
+  height: 36px;
   margin: 3px 0;
   border: 1.5px solid var(--border-color);
   border-radius: 3.5px;
-  font-size: 11px;
+  font-size: 16px;
   background: var(--input-bg);
   color: var(--text-dark);
   transition: border-color 0.3s ease;
@@ -92,12 +114,13 @@ input[type='email']:focus {
 
 textarea {
   width: 100%;
-  min-height: 65px;
+  min-height: 80px;
   padding: 8px;
+  height: 36px;
   margin: 3px 0;
   border: 1.5px solid var(--border-color);
   border-radius: 3.5px;
-  font-size: 11px;
+  font-size: 16px;
   font-family: inherit;
   resize: vertical;
   background: var(--input-bg);
@@ -186,7 +209,7 @@ textarea:focus {
 .postBody {
   color: var(--text-dark);
   margin: 0 0 12px 0;
-  font-size: 0.8rem;
+  font-size: 1rem;
   line-height: 1.4;
   flex-grow: 1;
 }
@@ -210,7 +233,7 @@ textarea:focus {
 .commentsSection {
   margin-top: 15px;
   padding: 12px;
-  background: var(--text-light);
+  background: var(--background);
   border-radius: 5px;
   box-shadow: var(--card-shadow);
 }
@@ -239,7 +262,7 @@ textarea:focus {
 .commentCard h3 {
   color: var(--primary);
   margin: 0 0 6px 0;
-  font-size: 0.85rem;
+  font-size: 1rem;
   font-weight: 600;
 }
 
@@ -247,7 +270,7 @@ textarea:focus {
   color: var(--text-dark);
   margin: 3px 0;
   font-style: italic;
-  font-size: 0.65rem;
+  font-size: 0.85rem;
 }
 
 .commentBody {
@@ -263,18 +286,23 @@ textarea:focus {
 .comment-inputs input,
 .comment-inputs textarea {
   margin: 5px 0;
+  height: 36px;
+  font-size: 16px;
+  padding: 8px;
 }
 
 .search-container {
   text-align: center;
   margin: 12px 0;
+  padding: 0 50px;
 }
 
 #searchBar {
-  width: 220px;
+  width: 400px;
   max-width: 100%;
-  font-size: 11px;
+  font-size: 16px;
   padding: 7px;
+  height: 36px;
 }
 
 .error-message {
@@ -367,11 +395,6 @@ dialog button {
 
 dialog button:hover {
   background-color: #d16554;
-}
-
-/* Subtle background for empty space */
-body::before {
-  display: none;
 }
 
 /* Responsive grid for posts */
